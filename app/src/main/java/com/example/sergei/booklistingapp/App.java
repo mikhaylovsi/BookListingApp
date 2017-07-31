@@ -2,6 +2,13 @@ package com.example.sergei.booklistingapp;
 
 import android.app.Application;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
+import java.util.List;
+
+import okhttp3.OkHttpClient;
+import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
@@ -18,9 +25,20 @@ public class App extends Application {
     public void onCreate() {
         super.onCreate();
 
+        HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
+        interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
+        OkHttpClient client = new OkHttpClient.Builder().addInterceptor(interceptor).build();
+
+
+        Gson gson = new GsonBuilder()
+                .registerTypeAdapter(List.class, new BookDeserializer())
+                .create();
+
+
         retrofit = new Retrofit.Builder()
                 .baseUrl("https://www.googleapis.com/") //Базовая часть адреса
-                .addConverterFactory(GsonConverterFactory.create()) //Конвертер, необходимый для преобразования JSON'а в объекты
+                .client(client)
+                .addConverterFactory(GsonConverterFactory.create(gson)) //Конвертер, необходимый для преобразования JSON'а в объекты
                 .build();
         booksApi = retrofit.create(BooksApi.class); //Создаем объект, при помощи которого будем выполнять запросы
     }
