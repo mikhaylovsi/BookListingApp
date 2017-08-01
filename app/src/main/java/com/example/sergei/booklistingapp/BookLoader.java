@@ -15,8 +15,12 @@ import retrofit2.Response;
  */
 
 public class BookLoader extends AsyncTaskLoader<List<Book>> {
-    public BookLoader(Context context) {
+
+    String search;
+
+    public BookLoader(Context context, String search) {
         super(context);
+        this.search = search;
     }
 
     @Override
@@ -25,7 +29,7 @@ public class BookLoader extends AsyncTaskLoader<List<Book>> {
         List<Book> books = new ArrayList<Book>();
 
         try {
-            Response<List<Book>> response = App.getApi().getData("android", 15).execute();
+            Response<List<Book>> response = App.getApi().getData(search, 15).execute();
             books.addAll(response.body());
             return books;
         } catch (IOException e) {

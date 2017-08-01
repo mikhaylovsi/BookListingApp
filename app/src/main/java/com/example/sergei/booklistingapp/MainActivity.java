@@ -5,6 +5,8 @@ import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.TextUtils;
+import android.view.View;
 
 import com.example.sergei.booklistingapp.databinding.ActivityMainBinding;
 
@@ -25,17 +27,37 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
         booksListAdapter = new BooksListAdapter(this, books);
         binding.lv.setAdapter(booksListAdapter);
-        getSupportLoaderManager().initLoader(1, null, this).forceLoad();
+
+        binding.buttonFind.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String search = binding.editText.getText().toString();
+                if (!TextUtils.isEmpty(search)) {
+
+                    Bundle args = new Bundle();
+                    args.putString("search", search);
+
+
+                    Loader loader = getSupportLoaderManager().getLoader(1);
+                    if (loader == null) {
+                        getSupportLoaderManager().initLoader(1, args, MainActivity.this).forceLoad();
+                    } else {
+                        getSupportLoaderManager().restartLoader(1, args, MainActivity.this);
+                    }
+
+                }
+            }
+        });
 
     }
 
     @Override
     public Loader<List<Book>> onCreateLoader(int id, Bundle args) {
-        return new BookLoader(this);
+        return new BookLoader(this, args.getString("search"));
     }
 
     @Override
-    public void onLoadFinished(Loader<List<Book>> loader, List<Book> books){
+    public void onLoadFinished(Loader<List<Book>> loader, List<Book> books) {
         booksListAdapter.clear();
         booksListAdapter.addAll(books);
         booksListAdapter.notifyDataSetChanged();
