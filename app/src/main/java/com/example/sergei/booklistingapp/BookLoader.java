@@ -25,7 +25,7 @@ public class BookLoader extends AsyncTaskLoader<List<Book>> {
         List<Book> books = new ArrayList<Book>();
 
         try {
-            Response<List<Book>> response = App.getApi().getData("android", 2).execute();
+            Response<List<Book>> response = App.getApi().getData("android", 15).execute();
             books.addAll(response.body());
             return books;
         } catch (IOException e) {

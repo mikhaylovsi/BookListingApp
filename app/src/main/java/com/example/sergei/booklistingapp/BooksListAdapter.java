@@ -12,6 +12,8 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.squareup.picasso.Picasso;
+
 import java.util.List;
 import java.util.zip.Inflater;
 
@@ -47,7 +49,12 @@ public class BooksListAdapter extends ArrayAdapter<Book> {
             viewHolder = (ViewHolder)convertView.getTag();
         }
 
-        viewHolder.ivBookImage.setImageResource(R.drawable.book_icon);
+        Picasso.with(context)
+                .load(getItem(position).getUri())
+                .placeholder(R.drawable.book_icon)
+                .error(R.drawable.book_icon)
+                .into(viewHolder.ivBookImage);
+
         viewHolder.tvBookName.setText(getItem(position).getName());
 
         return convertView;
