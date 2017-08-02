@@ -28,8 +28,17 @@ public class BookDeserializer implements JsonDeserializer<List<Book>> {
             JsonObject jsonBook = jsonElement.getAsJsonObject();
             JsonObject volume = jsonBook.get("volumeInfo").getAsJsonObject();
             String title = volume.get("title").getAsString();
-            JsonObject imageLinks = volume.get("imageLinks").getAsJsonObject();
-            String url = imageLinks.get("smallThumbnail").getAsString();
+            String url = "";
+            try {
+                JsonObject imageLinks = volume.get("imageLinks").getAsJsonObject();
+                if(imageLinks != null) {
+                    url = imageLinks.get("smallThumbnail").getAsString();
+                }
+            } catch (NullPointerException e){
+                e.printStackTrace();
+            }
+
+
 
             Book book = new Book(url, title);
             books.add(book);

@@ -42,7 +42,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                     if (loader == null) {
                         getSupportLoaderManager().initLoader(1, args, MainActivity.this).forceLoad();
                     } else {
-                        getSupportLoaderManager().restartLoader(1, args, MainActivity.this);
+                        getSupportLoaderManager().restartLoader(1, args, MainActivity.this).forceLoad();
                     }
 
                 }
@@ -53,6 +53,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
     @Override
     public Loader<List<Book>> onCreateLoader(int id, Bundle args) {
+        binding.pb.setVisibility(View.VISIBLE);
         return new BookLoader(this, args.getString("search"));
     }
 
@@ -61,6 +62,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         booksListAdapter.clear();
         booksListAdapter.addAll(books);
         booksListAdapter.notifyDataSetChanged();
+        binding.pb.setVisibility(View.GONE);
     }
 
     @Override
