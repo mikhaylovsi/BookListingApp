@@ -13,7 +13,12 @@ import com.example.sergei.booklistingapp.databinding.ActivityMainBinding;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<List<Book>> {
+import rx.Scheduler;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
+import rx.schedulers.Schedulers;
+
+public class MainActivity extends AppCompatActivity {
 
     ActivityMainBinding binding;
     List<Book> books = new ArrayList<Book>();
@@ -34,39 +39,23 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                 String search = binding.editText.getText().toString();
                 if (!TextUtils.isEmpty(search)) {
 
-                    Bundle args = new Bundle();
-                    args.putString("search", search);
-
-
-                    Loader loader = getSupportLoaderManager().getLoader(1);
-                    if (loader == null) {
-                        getSupportLoaderManager().initLoader(1, args, MainActivity.this).forceLoad();
-                    } else {
-                        getSupportLoaderManager().restartLoader(1, args, MainActivity.this).forceLoad();
-                    }
-
+                    binding.pb.setVisibility(View.VISIBLE);
+                    App.getApi().getData(search, 15)
+                            .subscribeOn(Schedulers.io())
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .subscribe(new Action1<List<Book>>() {
+                                @Override
+                                public void call(List<Book> books) {
+                                    booksListAdapter.clear();
+                                    booksListAdapter.addAll(books);
+                                    booksListAdapter.notifyDataSetChanged();
+                                    binding.pb.setVisibility(View.GONE);
+                                }
+                            });
                 }
             }
         });
 
     }
 
-    @Override
-    public Loader<List<Book>> onCreateLoader(int id, Bundle args) {
-        binding.pb.setVisibility(View.VISIBLE);
-        return new BookLoader(this, args.getString("search"));
-    }
-
-    @Override
-    public void onLoadFinished(Loader<List<Book>> loader, List<Book> books) {
-        booksListAdapter.clear();
-        booksListAdapter.addAll(books);
-        booksListAdapter.notifyDataSetChanged();
-        binding.pb.setVisibility(View.GONE);
-    }
-
-    @Override
-    public void onLoaderReset(Loader<List<Book>> loader) {
-
-    }
 }

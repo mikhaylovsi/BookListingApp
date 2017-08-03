@@ -10,6 +10,7 @@ import java.util.List;
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
+import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 /**
@@ -38,6 +39,7 @@ public class App extends Application {
         retrofit = new Retrofit.Builder()
                 .baseUrl("https://www.googleapis.com/") //Базовая часть адреса
                 .client(client)
+                .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
                 .addConverterFactory(GsonConverterFactory.create(gson)) //Конвертер, необходимый для преобразования JSON'а в объекты
                 .build();
         booksApi = retrofit.create(BooksApi.class); //Создаем объект, при помощи которого будем выполнять запросы
