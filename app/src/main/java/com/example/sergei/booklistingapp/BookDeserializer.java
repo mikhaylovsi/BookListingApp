@@ -15,11 +15,11 @@ import java.util.List;
  * Created by Sergei on 31.07.2017.
  */
 
-public class BookDeserializer implements JsonDeserializer<List<Book>> {
+public class BookDeserializer implements JsonDeserializer<ArrayList<Book>> {
     @Override
-    public List<Book> deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
+    public ArrayList<Book> deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
 
-        List<Book> books = new ArrayList<>();
+        ArrayList<Book> books = new ArrayList<>();
 
         JsonObject jsonObject = json.getAsJsonObject();
         JsonArray jsonArray = jsonObject.get("items").getAsJsonArray();

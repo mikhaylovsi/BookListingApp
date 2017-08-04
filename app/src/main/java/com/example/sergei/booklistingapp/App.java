@@ -5,6 +5,7 @@ import android.app.Application;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import okhttp3.OkHttpClient;
@@ -32,7 +33,7 @@ public class App extends Application {
 
 
         Gson gson = new GsonBuilder()
-                .registerTypeAdapter(List.class, new BookDeserializer())
+                .registerTypeAdapter(ArrayList.class, new BookDeserializer())
                 .create();
 
 

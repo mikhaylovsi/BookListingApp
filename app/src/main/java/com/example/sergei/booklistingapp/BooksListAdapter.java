@@ -4,6 +4,7 @@ import android.content.Context;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +14,8 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
+
+import org.w3c.dom.Text;
 
 import java.util.List;
 import java.util.zip.Inflater;
@@ -46,16 +49,29 @@ public class BooksListAdapter extends ArrayAdapter<Book> {
             viewHolder.tvBookName = (TextView) convertView.findViewById(R.id.bookName);
             convertView.setTag(viewHolder);
         } else {
-            viewHolder = (ViewHolder)convertView.getTag();
+            viewHolder = (ViewHolder) convertView.getTag();
         }
 
-        Picasso.with(context)
-                .load(getItem(position).getUri())
-                .placeholder(R.drawable.book_icon)
-                .error(R.drawable.book_icon)
-                .into(viewHolder.ivBookImage);
 
-        viewHolder.tvBookName.setText(getItem(position).getName());
+        Book book = getItem(position);
+
+        if(book != null){
+
+            if (TextUtils.isEmpty(book.getUri())) {
+                viewHolder.ivBookImage.setImageResource(R.drawable.book_icon);
+            } else {
+                Picasso.with(context)
+                        .load(book.getUri())
+                        .placeholder(R.drawable.book_icon)
+                        .error(R.drawable.book_icon)
+                        .into(viewHolder.ivBookImage);
+            }
+
+            viewHolder.tvBookName.setText(book.getName());
+
+        }
+
+
 
         return convertView;
     }
